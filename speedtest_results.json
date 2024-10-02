@@ -1,0 +1,46 @@
+[
+    {
+        "name": "Ric Marvin Dimabayao",
+        "address": "Sta. Cruz Sur",
+        "isp": "PLDT",
+        "users": "4",
+        "download_speed": 10.32,
+        "upload_speed": 3.19,
+        "ping": 22.13,
+        "server": "keith.net Inc.",
+        "datetime": "2024-10-02 17:06:22"
+    },
+    {
+        "name": "Ric Marvin G. Dimabayao",
+        "address": "Sta. Cruz Sur",
+        "isp": "PLDT",
+        "users": "4",
+        "download_speed": 17.98,
+        "upload_speed": 9.47,
+        "ping": 20.192,
+        "server": "Globe Telecom",
+        "datetime": "2024-10-02 17:08:14"
+    },
+    {
+        "name": "Ric Marvin",
+        "address": "Sta. Cruz Sur",
+        "isp": "PLDT",
+        "users": "4",
+        "download_speed": 19.99,
+        "upload_speed": 9.49,
+        "ping": 23.891,
+        "server": "Globe Telecom",
+        "datetime": "2024-10-02 17:11:26"
+    },
+    {
+        "name": "Ric Marvin",
+        "address": "Sta. Cruz Sur",
+        "isp": "Globe",
+        "users": "4",
+        "download_speed": 17.65,
+        "upload_speed": 5.52,
+        "ping": 20.259,
+        "server": "Globe Telecom",
+        "datetime": "2024-10-02 17:11:52"
+    }
+]

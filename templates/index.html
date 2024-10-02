@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hydra Internet Speed Test</title>
+    <style>
+        body {
+            background-color: #070F2B; /* Updated */
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #1B1A55; /* Updated */
+            padding: 10px;
+            text-align: left;
+        }
+
+        nav a {
+            color: rgb(255, 255, 255);
+            text-decoration: none;
+            font-size: 1.2rem;
+            margin-left: 30px;
+            cursor: pointer;
+        }
+
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 2px;
+            margin-top: 90px;
+        }
+
+        .test-box {
+            margin-top: 20px;
+            padding: 30px;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            background: rgba(27, 26, 85, 0.8); /* Updated */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn {
+            background-color: #535C91; /* Updated */
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            color: #ffffff;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 3px 5px 9px rgba(0, 0, 0, 0.5);
+            margin-top: 15px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #4a3b8b; /* Keep the hover color similar */
+            transform: scale(1.05);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 1.2rem;
+        }
+
+        .form-group input, .form-group select {
+            padding: 8px;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 5px;
+            border: none;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border: 2px solid #535C91; /* Updated */
+        }
+
+        .checkbox-group {
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+
+        .results-container {
+            display: none; /* Hide results initially */
+            justify-content: center;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .results {
+            text-align: center;
+        }
+
+        .results p {
+            margin: 10px 0;
+            font-size: 1.2rem;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .spinner {
+            display: none;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #ffffff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: #1B1A55; /* Updated */
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 12px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .form-group label {
+                font-size: 1rem;
+            }
+
+            .form-group input, .form-group select {
+                font-size: 0.9rem;
+            }
+
+            .results p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#" id="about-link">About</a>
+    </nav>
+
+    <h1>WELCOME TO HYDRA INTERNET SPEED TEST!</h1>
+
+    <div class="test-box">
+        <h2>Internet Speed Test</h2>
+
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Your Name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <select name="barangay" id="address" required>
+                <option value="" disabled selected>Select Barangay</option>
+                <option value="Antipolo">Antipolo</option>
+                <option value="Cristo Rey">Cristo Rey</option>
+                <option value="Del Rosario (Banao)">Del Rosario (Banao)</option>
+                <option value="Francia">Francia</option>
+                <option value="La Anunciacion">La Anunciacion</option>
+                <option value="La Medalla">La Medalla</option>
+                <option value="La Purisima">La Purisima</option>
+                <option value="La Trinidad">La Trinidad</option>
+                <option value="Niño Jesus">Niño Jesus</option>
+                <option value="Perpetual Help">Perpetual Help</option>
+                <option value="Sagrada">Sagrada</option>
+                <option value="Salvacion">Salvacion</option>
+                <option value="San Agustin">San Agustin</option>
+                <option value="San Andres">San Andres</option>
+                <option value="San Antonio">San Antonio</option>
+                <option value="San Francisco">San Francisco</option>
+                <option value="San Isidro">San Isidro</option>
+                <option value="San Jose">San Jose</option>
+                <option value="San Juan">San Juan</option>
+                <option value="San Miguel">San Miguel</option>
+                <option value="San Nicolas">San Nicolas</option>
+                <option value="San Pedro">San Pedro</option>
+                <option value="San Rafael">San Rafael</option>
+                <option value="San Ramon">San Ramon</option>
+                <option value="San Roque">San Roque</option>
+                <option value="Santiago">Santiago</option>
+                <option value="San Vicente Norte">San Vicente Norte</option>
+                <option value="San Vicente Sur">San Vicente Sur</option>
+                <option value="Sta. Cruz Norte">Sta. Cruz Norte</option>
+                <option value="Sta. Cruz Sur">Sta. Cruz Sur</option>
+                <option value="Sta. Elena">Sta. Elena</option>
+                <option value="Sta. Isabel">Sta. Isabel</option>
+                <option value="Sta. Maria">Sta. Maria</option>
+                <option value="Sta. Teresita">Sta. Teresita</option>
+                <option value="Sto. Domingo">Sto. Domingo</option>
+                <option value="Sto. Niño">Sto. Niño</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="isp">Internet Service Provider:</label>
+            <select id="isp" required>
+                <option value="" disabled selected>Select ISP</option>
+                <option value="PLDT">PLDT</option>
+                <option value="Globe">Globe</option>
+                <option value="Converge">Converge</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="users">Number of Internet Users:</label>
+            <input type="number" id="users" placeholder="Number of users" required min="1">
+        </div>
+
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" id="terms-checkbox" required>
+                I agree to the <a href="#" id="terms-link">Terms and Conditions</a>
+            </label>
+        <div class="checkbox-group"></div>
+            </label>
+                <input type="checkbox" id="terms-checkbox" required>
+                I agree to the <a href="#" id="privacy-link">Privacy Policy</a>
+            </label>
+        </div>
+
+        <button class="btn" id="start-test">Start Speed Test</button>
+        <div class="spinner" id="spinner"></div>
+        <div class="error-message" id="error-message"></div>
+        
+        <div class="results-container" id="results-container">
+            <h3>Test Results:</h3>
+            <div class="results" id="results">
+                <p id="download-speed"></p>
+                <p id="upload-speed"></p>
+                <p id="ping"></p>
+                <p id="test-date"></p>
+                <p id="test-server"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for About, Terms, and Privacy -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <span class="close" id="close-modal">&times;</span>
+            </div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const startTestButton = document.getElementById('start-test');
+        const spinner = document.getElementById('spinner');
+        const resultsContainer = document.getElementById('results-container');
+        const downloadSpeedElement = document.getElementById('download-speed');
+        const uploadSpeedElement = document.getElementById('upload-speed');
+        const pingElement = document.getElementById('ping');
+        const testDateElement = document.getElementById('test-date');
+        const testServerElement = document.getElementById('test-server');
+        const errorMessageElement = document.getElementById('error-message');
+
+        startTestButton.addEventListener('click', async () => {
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const isp = document.getElementById('isp').value;
+            const users = document.getElementById('users').value;
+            const termsCheckbox = document.getElementById('terms-checkbox').checked;
+
+            if (!name || !address || !isp || !users || !termsCheckbox) {
+                errorMessageElement.textContent = "Please fill all fields and accept the terms.";
+                return;
+            }
+
+            errorMessageElement.textContent = ""; // Clear any previous error message
+            spinner.style.display = 'block'; // Show spinner
+
+            try {
+                const response = await fetch('/speedtest', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, address, isp, users })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+                // Hide spinner
+                spinner.style.display = 'none';
+                // Show results
+                resultsContainer.style.display = 'block';
+                downloadSpeedElement.textContent = `Download Speed: ${data.download_speed} Mbps`;
+                uploadSpeedElement.textContent = `Upload Speed: ${data.upload_speed} Mbps`;
+                pingElement.textContent = `Ping: ${data.ping} ms`;
+                testDateElement.textContent = `Date and Time: ${data.datetime}`;
+                testServerElement.textContent = `Server: ${data.server}`;
+            } catch (error) {
+                spinner.style.display = 'none'; // Hide spinner on error
+                errorMessageElement.textContent = 'Error: ' + error.message;
+            }
+        });
+
+        // Modal logic
+        const modal = document.getElementById("modal");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBody = document.getElementById("modal-body");
+        const closeModalButton = document.getElementById("close-modal");
+
+        document.getElementById('about-link').addEventListener('click', () => {
+    modalTitle.textContent = "About Us";
+    modalBody.innerHTML = `
+            <p style="text-align: justify; margin-bottom: 2 rem;">
+            We are a group of passionate Electronics Engineering students from Camarines Sur Polytechnic Colleges (CSPC), working on our capstone project titled "Exploratory Data Analysis of Internet Service Providers in Iriga City, Camarines Sur." Our project aims to assess the quality and performance of various internet service providers (ISPs) in our area, providing valuable insights that could help improve connectivity and user experiences.
+            </p>
+
+            <p style="text-align: justify; margin-bottom: 2 rem;">
+            Through our web app, we aim to gather real-time internet speed test data from users across Iriga City. The data will be analyzed and presented in a comprehensive study as part of our academic requirement. Our ultimate goal is to contribute to improving internet infrastructure and services in our community.
+            </p>
+
+            <p style="text-align: justify; margin-bottom: 2 rem;">
+            This project represents our dedication to applying theoretical knowledge into real-world solutions, reflecting CSPC's commitment to fostering innovation and practical skills.
+            </p>
+
+            <p style="text-align: justify; margin-bottom: 2 rem;">
+            Thank you for participating in this journey with us!
+            </p>
+    `;
+    modal.style.display = "block";
+});
+
+document.getElementById('terms-link').addEventListener('click', () => {
+    modalTitle.textContent = "Terms and Conditions";
+    modalBody.innerHTML = `
+        <h4>1. Introduction</h4>
+        <p style="text-align: justify; margin-bottom: 2 rem;">
+        <p>By participating in this speed test survey, you agree to abide by these Terms and Conditions. If you do not agree, please do not participate.</p>
+
+        <h4>2. Eligibility</h4>
+        <p style="text-align: justify; margin-bottom: 2 rem;">
+        <p>Participation in the survey is open to individuals who are residents of Iriga City, Camarines Sur, and are at least 18 years of age.</p>
+
+        <h4>3. Participation</h4>
+        <p style="text-align: justify; margin-bottom: 2 rem;">
+        <p>Participants are required to provide accurate information, including their name, complete address, and Internet Service Provider (ISP). Any false information may disqualify you from participating.</p>
+
+        <h4>4. Data Usage</h4>
+        <p style="text-align: justify; margin-bottom: 2 rem;">
+        <p>The data collected will be used for the purpose of conducting an Exploratory Data Analysis of Internet Service Providers in Iriga City, Camarines Sur. By participating, you consent to the collection and analysis of your data.</p>
+
+        <h4>5. Intellectual Property</h4>
+        <p style="text-align: justify; margin-bottom: 2 rem;">
+        <p>All intellectual property rights related to the survey and its findings are owned by the research team. Participants have no rights to claim ownership over any research findings.</p>
+
+        <h4>6. Modification of Terms</h4>
+        <p style="text-align: justify; margin-bottom: 2 rem;">
+        <p>The research team reserves the right to modify these Terms and Conditions at any time. Participants will be notified of any changes.</p>
+
+        <h4>7. Limitation of Liability</h4>
+        <p style="text-align: justify; margin-bottom: 2 rem;">
+        <p>The research team will not be liable for any direct, indirect, incidental, or consequential damages arising from your participation in the survey.</p>
+
+        <h4>8. Governing Law</h4>
+        <p style="text-align: justify; margin-bottom: 2 rem;">
+        <p>These Terms and Conditions are governed by the laws of the Republic of the Philippines.</p>
+    `;
+    modal.style.display = "block";
+});
+
+
+document.getElementById('privacy-link').addEventListener('click', () => {
+    modalTitle.textContent = "Data Privacy Policy";
+    modalBody.innerHTML = `
+        <h4>1. Overview</h4>
+        <p>This Data Privacy Policy outlines how we collect, use, and protect your personal information in compliance with the Data Privacy Act of 2012 (Republic Act No. 10173) in the Philippines.</p>
+
+        <h4>2. Data Collection</h4>
+        <p>We collect personal information such as your name, complete address, and ISP for the purpose of conducting the speed test survey. Participation is voluntary, and you may choose not to provide this information.</p>
+
+        <h4>3. Use of Personal Data</h4>
+        <p>Your personal data will be used solely for the analysis of Internet Service Providers in Iriga City, Camarines Sur. We will not use your data for any other purposes without your explicit consent.</p>
+
+        <h4>4. Data Retention</h4>
+        <p>We will retain your personal information only for as long as necessary to fulfill the purposes outlined in this policy or as required by law.</p>
+
+        <h4>5. Data Security</h4>
+        <p>We take the security of your personal data seriously. We implement reasonable organizational, technical, and administrative measures to protect your data from unauthorized access, use, or disclosure.</p>
+
+        <h4>6. Data Sharing</h4>
+        <p>We will not sell, rent, or lease your personal information to third parties. Your data may be shared with authorized personnel only for research purposes.</p>
+
+        <h4>7. Rights of Data Subjects</h4>
+        <p>You have the right to:</p>
+        <ul>
+            <li>Access your personal data.</li>
+            <li>Correct any inaccuracies in your personal data.</li>
+            <li>Withdraw consent to the processing of your personal data.</li>
+        </ul>
+
+        <h4>8. Contact Information</h4>
+        <p>For inquiries regarding this Data Privacy Policy or to exercise your rights, please contact us at: <a href="mailto:ridimabayao@cspc.edu.ph" style="color: white;">ridimabayao@cspc.edu.ph</a></p>
+
+        <h4>9. Consent</h4>
+        <p>By participating in the speed test survey, you acknowledge that you have read and understood this Data Privacy Policy and agree to the collection and processing of your personal data in accordance with this policy.</p>
+    `;
+    modal.style.display = "block";
+});
+
+
+        closeModalButton.addEventListener('click', () => {
+            modal.style.display = "none";
+        });
+
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
